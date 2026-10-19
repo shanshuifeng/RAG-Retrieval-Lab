@@ -11,6 +11,9 @@ data/raw/
 data/processed/
 data/index/
 
+# ⭐ 每条 query 的完整排序结果（数十 MB，可由 _run 脚本从索引缓存重算）
+results/*_run.json
+
 # ────────── 模型缓存 ──────────
 models/
 *.bin

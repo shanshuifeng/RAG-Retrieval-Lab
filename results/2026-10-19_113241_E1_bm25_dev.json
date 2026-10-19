@@ -1,0 +1,53 @@
+{
+  "experiment_id": "E1",
+  "method": "bm25",
+  "split": "dev",
+  "date": "2026-10-19T11:32:41",
+  "config": {
+    "dataset": "dureader-retrieval (C-MTEB test / ranking dev)",
+    "corpus_size": 100000,
+    "queries": 8640,
+    "bm25_k1": 1.5,
+    "bm25_b": 0.75,
+    "tokenizer": "jieba",
+    "top_k": 100,
+    "ks": [
+      1,
+      5,
+      10,
+      20,
+      100
+    ],
+    "seed": 42
+  },
+  "results": {
+    "mrr@1": 0.473611,
+    "mrr@10": 0.562053,
+    "mrr@100": 0.567292,
+    "mrr@20": 0.565347,
+    "mrr@5": 0.553779,
+    "ndcg@1": 0.473611,
+    "ndcg@10": 0.519865,
+    "ndcg@100": 0.562614,
+    "ndcg@20": 0.537338,
+    "ndcg@5": 0.496084,
+    "recall@1": 0.262221,
+    "recall@10": 0.603269,
+    "recall@100": 0.771192,
+    "recall@20": 0.664668,
+    "recall@5": 0.521071
+  },
+  "cost": {
+    "build_sec": 69.49,
+    "search_sec_total": 1252.28,
+    "search_ms_per_query": 144.94,
+    "n_tokens": 20193248
+  },
+  "filtered": {
+    "empty_relevant": 0,
+    "missing_in_run": 0,
+    "missing_in_run_qids": [],
+    "queries_evaluated": 8640
+  },
+  "total_sec": 1255.6
+}
