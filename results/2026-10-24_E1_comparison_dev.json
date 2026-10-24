@@ -1,0 +1,86 @@
+{
+  "note": "E1 四方法对比 + 配对显著性检验 + 互补性分析",
+  "split": "dev",
+  "n_queries": 8640,
+  "metrics": {
+    "BM25(默认)": {
+      "recall@10": 0.603269,
+      "ndcg@10": 0.519865
+    },
+    "BM25(调优)": {
+      "recall@10": 0.610185,
+      "ndcg@10": 0.530542
+    },
+    "D1/BGE-small": {
+      "recall@10": 0.809628,
+      "ndcg@10": 0.723848
+    },
+    "D2/BGE-base": {
+      "recall@10": 0.871839,
+      "ndcg@10": 0.793555
+    }
+  },
+  "significance_tests": [
+    {
+      "comparison": "D1/BGE-small vs BM25(调优)",
+      "n": 8640,
+      "a_mean": 0.530542,
+      "b_mean": 0.723848,
+      "diff": 0.193305,
+      "rel_pct": 36.44,
+      "p_value": 0.0,
+      "cohens_d": 0.5788,
+      "ci95": [
+        0.18636,
+        0.200369
+      ],
+      "better": 4634,
+      "worse": 1121,
+      "same": 2885
+    },
+    {
+      "comparison": "D2/BGE-base vs D1/BGE-small",
+      "n": 8640,
+      "a_mean": 0.723848,
+      "b_mean": 0.793555,
+      "diff": 0.069708,
+      "rel_pct": 9.63,
+      "p_value": 2.5281161063292047e-196,
+      "cohens_d": 0.3301,
+      "ci95": [
+        0.065216,
+        0.074116
+      ],
+      "better": 3240,
+      "worse": 1258,
+      "same": 4142
+    },
+    {
+      "comparison": "D2/BGE-base vs BM25(调优)",
+      "n": 8640,
+      "a_mean": 0.530542,
+      "b_mean": 0.793555,
+      "diff": 0.263013,
+      "rel_pct": 49.57,
+      "p_value": 0.0,
+      "cohens_d": 0.7705,
+      "ci95": [
+        0.255788,
+        0.270232
+      ],
+      "better": 5300,
+      "worse": 691,
+      "same": 2649
+    }
+  ],
+  "complementarity": {
+    "BM25(调优) vs D1/BGE-small": {
+      "mean_iou_top10": 0.2065,
+      "queries_where_union_beats_a": 3153
+    },
+    "D1/BGE-small vs D2/BGE-base": {
+      "mean_iou_top10": 0.3956,
+      "queries_where_union_beats_a": 1468
+    }
+  }
+}
