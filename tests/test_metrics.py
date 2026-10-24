@@ -202,5 +202,64 @@ class TestKValidation(unittest.TestCase):
                 ndcg_at_k(["A"], {"A"}, bad)
 
 
+class TestInputTypeRobustness(unittest.TestCase):
+    """⭐ 输入类型多样性测试 —— 防止「生成器被耗尽」类 bug 复发。
+
+    2026-10-24 事故：mrr_at_k 曾把 rel 写成生成器 `(x for x in relevant)`，
+    导致 `if not rel` 恒为假、且循环中 `d in rel` 会边判断边耗尽生成器，
+    MRR 系统性偏低且【不报错】。
+
+    本测试强制所有指标函数对 list / set / tuple / 生成器 / frozenset
+    都返回【完全相同】的结果。
+    """
+
+    RANKED = ["X", "A", "Y", "B", "Z"]
+    REL = ["A", "B"]
+
+    def _variants(self, rel):
+        return {
+            "list": list(rel),
+            "set": set(rel),
+            "tuple": tuple(rel),
+            "frozenset": frozenset(rel),
+            "generator": (x for x in rel),
+            "dict_keys": dict.fromkeys(rel).keys(),
+        }
+
+    def test_all_metrics_type_agnostic(self):
+        from src.eval.metrics import METRICS
+        for name, fn in METRICS.items():
+            baseline = None
+            for variant, rel_obj in self._variants(self.REL).items():
+                val = fn(self.RANKED, rel_obj, 10)
+                if baseline is None:
+                    baseline = val
+                    self.assertGreater(val, 0.0, f"{name} 应命中，却得 0")
+                else:
+                    self.assertAlmostEqual(
+                        val, baseline, places=12,
+                        msg=f"⚠️ {name} 对 {variant} 输入的结果不一致："
+                            f"{val} != {baseline}（生成器陷阱？）")
+
+    def test_empty_relevant_all_types(self):
+        from src.eval.metrics import METRICS
+        for name, fn in METRICS.items():
+            for variant, rel_obj in self._variants([]).items():
+                self.assertEqual(
+                    fn(self.RANKED, rel_obj, 10), 0.0,
+                    f"⚠️ {name} 对空标注（{variant}）应返回 0.0")
+
+    def test_generator_not_consumed_twice(self):
+        # 直接针对事故形态：生成器作为 relevant 传入，必须能正确命中第 2 位
+        gen = (x for x in ["A", "B"])
+        # RANKED 中 A 在第 2 位 → MRR 应为 1/2
+        self.assertAlmostEqual(mrr_at_k(self.RANKED, gen, 10), 0.5, places=12)
+
+    def test_ranked_as_generator(self):
+        # ranked 也应是可迭代即用，不应因生成器而漏结果
+        gen_ranked = (x for x in self.RANKED)
+        self.assertAlmostEqual(recall_at_k(gen_ranked, {"A", "B"}, 10), 1.0, places=12)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

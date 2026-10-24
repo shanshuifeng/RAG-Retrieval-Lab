@@ -71,7 +71,15 @@ def precision_at_k(ranked: Sequence[str], relevant: Iterable[str], k: int) -> fl
 
 
 def mrr_at_k(ranked: Sequence[str], relevant: Iterable[str], k: int) -> float:
-    """MRR@K = 1 / rank（第一个相关文档的位置，从 1 起）；K 内没有则 0.0"""
+    """MRR@K = 1 / rank（第一个相关文档的位置，从 1 起）；K 内没有则 0.0
+
+    ⚠️ 2026-10-24 修复：此处曾写成 `rel = (str(x) for x in relevant)`（生成器），
+       导致两个后果：
+         1) `if not rel` 恒为 False（生成器对象永远为真），空标注不再被正确返回 0；
+         2) 生成器只能消费一次，`for` 循环里的 `d in rel` 会边判断边耗尽它，
+            使本该命中的文档被判为不命中 → MRR 系统性偏低。
+       必须用【集合推导】，与 recall/precision/ndcg 保持一致。
+    """
     _check_k(k)
     rel = {str(x) for x in relevant}
     if not rel:
@@ -80,7 +88,6 @@ def mrr_at_k(ranked: Sequence[str], relevant: Iterable[str], k: int) -> float:
         if d in rel:
             return 1.0 / i
     return 0.0
-
 
 def dcg_at_k(gains: Sequence[float], k: int) -> float:
     """DCG@K = Σ_{i=1..K} (2^g_i - 1) / log2(i+1)"""

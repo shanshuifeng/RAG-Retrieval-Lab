@@ -27,7 +27,7 @@ from rank_bm25 import BM25Okapi
 
 from src.data.loader import Split
 
-# ⭐ jieba 首次导入会加载词典（约 1s），且默认往 stderr 打日志
+#  jieba 首次导入会加载词典（约 1s），且默认往 stderr 打日志
 jieba.setLogLevel(60)  # 静默
 
 
@@ -56,8 +56,8 @@ class BM25Retriever:
     def build(self, split: Split, verbose: bool = True) -> None:
         """在给定语料的【全部段落】上建索引。
 
-        ⭐ 必须用全语料建索引：检索任务的语料库是固定的，
-           所有方法（BM25/稠密/混合）都在同一个库上检索，才能横向比较。
+         必须用全语料建索引：检索任务的语料库是固定的，
+        所有方法（BM25/稠密/混合）都在同一个库上检索，才能横向比较。
         """
         t0 = time.time()
         self.passage_ids = list(split.passage_ids)
