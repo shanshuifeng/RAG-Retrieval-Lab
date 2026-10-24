@@ -1,0 +1,231 @@
+{
+  "experiment_id": "FINAL",
+  "split": "test",
+  "date": "2026-10-24T22:29:21",
+  "note": "⭐ test 集最终评测，全项目仅一次。所有配置在 dev 上锁定。",
+  "locked_config": {
+    "bm25": {
+      "k1": 0.7,
+      "b": 0.75
+    },
+    "dense_d1": {
+      "model": "BAAI/bge-small-zh-v1.5"
+    },
+    "dense_d2": {
+      "model": "BAAI/bge-base-zh-v1.5"
+    },
+    "rrf": {
+      "pair": [
+        "BM25(调优)",
+        "D2"
+      ],
+      "k": 20,
+      "weights": "equal"
+    },
+    "rerank": {
+      "first_stage": "D2",
+      "first_top": 100,
+      "K": 20,
+      "model": "BAAI/bge-reranker-base"
+    }
+  },
+  "data": {
+    "corpus": 100001,
+    "queries": 2000,
+    "qrels": 9839
+  },
+  "methods": {
+    "BM25(调优)": {
+      "results": {
+        "mrr@1": 0.6505,
+        "mrr@10": 0.724648,
+        "mrr@100": 0.72746,
+        "mrr@20": 0.72635,
+        "mrr@5": 0.720525,
+        "ndcg@1": 0.6505,
+        "ndcg@10": 0.568004,
+        "ndcg@100": 0.625598,
+        "ndcg@20": 0.592731,
+        "ndcg@5": 0.552785,
+        "recall@1": 0.170836,
+        "recall@10": 0.567806,
+        "recall@100": 0.746979,
+        "recall@20": 0.637617,
+        "recall@5": 0.465997
+      },
+      "cost": {
+        "build_base_sec": 67.62,
+        "search_sec": 1.48,
+        "search_ms_per_query": 0.742,
+        "device": "cpu"
+      },
+      "n_evaluated": 2000
+    },
+    "D1/BGE-small": {
+      "results": {
+        "mrr@1": 0.82,
+        "mrr@10": 0.874319,
+        "mrr@100": 0.875344,
+        "mrr@20": 0.874881,
+        "mrr@5": 0.872308,
+        "ndcg@1": 0.82,
+        "ndcg@10": 0.794773,
+        "ndcg@100": 0.835457,
+        "ndcg@20": 0.815559,
+        "ndcg@5": 0.76616,
+        "recall@1": 0.225578,
+        "recall@10": 0.814241,
+        "recall@100": 0.942929,
+        "recall@20": 0.876816,
+        "recall@5": 0.667322
+      },
+      "cost": {
+        "encode_sec": 56.71,
+        "search_sec": 2.88,
+        "search_ms_per_query": 1.442,
+        "device": "cuda",
+        "fp16": true
+      },
+      "n_evaluated": 2000
+    },
+    "D2/BGE-base": {
+      "results": {
+        "mrr@1": 0.909,
+        "mrr@10": 0.937163,
+        "mrr@100": 0.938044,
+        "mrr@20": 0.937864,
+        "mrr@5": 0.936733,
+        "ndcg@1": 0.909,
+        "ndcg@10": 0.880911,
+        "ndcg@100": 0.906769,
+        "ndcg@20": 0.896555,
+        "ndcg@5": 0.861262,
+        "recall@1": 0.262288,
+        "recall@10": 0.889409,
+        "recall@100": 0.974231,
+        "recall@20": 0.940683,
+        "recall@5": 0.755567
+      },
+      "cost": {
+        "encode_sec": 231.1,
+        "search_sec": 1.67,
+        "search_ms_per_query": 0.837,
+        "device": "cuda",
+        "fp16": true
+      },
+      "n_evaluated": 2000
+    },
+    "RRF(BM25+D2)": {
+      "results": {
+        "mrr@1": 0.802,
+        "mrr@10": 0.86201,
+        "mrr@100": 0.863066,
+        "mrr@20": 0.862764,
+        "mrr@5": 0.857825,
+        "ndcg@1": 0.802,
+        "ndcg@10": 0.768071,
+        "ndcg@100": 0.826561,
+        "ndcg@20": 0.806147,
+        "ndcg@5": 0.727649,
+        "recall@1": 0.21858,
+        "recall@10": 0.805545,
+        "recall@100": 0.969384,
+        "recall@20": 0.907457,
+        "recall@5": 0.633189
+      },
+      "cost": {
+        "fuse_sec": 0.11,
+        "note": "纯排名计算，零检索成本"
+      },
+      "n_evaluated": 2000
+    },
+    "D2+重排(K=20)": {
+      "results": {
+        "mrr@1": 0.9015,
+        "mrr@10": 0.933312,
+        "mrr@100": 0.933728,
+        "mrr@20": 0.933728,
+        "mrr@5": 0.932225,
+        "ndcg@1": 0.9015,
+        "ndcg@10": 0.882299,
+        "ndcg@100": 0.895792,
+        "ndcg@20": 0.896676,
+        "ndcg@5": 0.864317,
+        "recall@1": 0.260372,
+        "recall@10": 0.893693,
+        "recall@100": 0.940683,
+        "recall@20": 0.940683,
+        "recall@5": 0.763599
+      },
+      "cost": {
+        "score_pairs": 200000,
+        "est_latency_ms_per_query": 79.4,
+        "latency_model": "每对延迟×K 估算"
+      },
+      "n_evaluated": 2000
+    }
+  },
+  "significance": [
+    {
+      "n": 2000,
+      "diff": 0.226769,
+      "rel_pct": 39.92,
+      "p_value": 1.523504657036425e-212,
+      "cohens_d": 0.7893,
+      "ci95": [
+        0.214215,
+        0.239809
+      ],
+      "comparison": "D1/BGE-small vs BM25(调优)"
+    },
+    {
+      "n": 2000,
+      "diff": 0.312907,
+      "rel_pct": 55.09,
+      "p_value": 0.0,
+      "cohens_d": 1.0354,
+      "ci95": [
+        0.299726,
+        0.326393
+      ],
+      "comparison": "D2/BGE-base vs BM25(调优)"
+    },
+    {
+      "n": 2000,
+      "diff": 0.200067,
+      "rel_pct": 35.22,
+      "p_value": 0.0,
+      "cohens_d": 1.0394,
+      "ci95": [
+        0.191757,
+        0.208554
+      ],
+      "comparison": "RRF(BM25+D2) vs BM25(调优)"
+    },
+    {
+      "n": 2000,
+      "diff": 0.314295,
+      "rel_pct": 55.33,
+      "p_value": 0.0,
+      "cohens_d": 1.0413,
+      "ci95": [
+        0.301261,
+        0.327916
+      ],
+      "comparison": "D2+重排(K=20) vs BM25(调优)"
+    },
+    {
+      "n": 2000,
+      "diff": 0.001388,
+      "rel_pct": 0.16,
+      "p_value": 0.6253487465090712,
+      "cohens_d": 0.0109,
+      "ci95": [
+        -0.004215,
+        0.006868
+      ],
+      "comparison": "D2+重排(K=20) vs D2/BGE-base"
+    }
+  ],
+  "total_sec": 1037.1
+}
