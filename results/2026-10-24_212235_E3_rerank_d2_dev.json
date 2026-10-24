@@ -1,0 +1,72 @@
+{
+  "experiment_id": "E3",
+  "method": "rerank:bge-reranker-base over D2",
+  "split": "dev",
+  "date": "2026-10-24T21:22:35",
+  "config": {
+    "first_stage": "d2",
+    "first_stage_top": 100,
+    "k_grid": [
+      10,
+      20,
+      50,
+      100
+    ],
+    "reranker": "BAAI/bge-reranker-base",
+    "queries": 8640
+  },
+  "first_stage_baseline_ndcg10": 0.813905,
+  "k_sweep": [
+    {
+      "K": 10,
+      "ndcg@10": 0.834542,
+      "recall@10": 0.887483,
+      "gain_vs_first": 0.020637,
+      "gain_pct": 2.54,
+      "est_latency_ms_per_query": 41.3
+    },
+    {
+      "K": 20,
+      "ndcg@10": 0.835597,
+      "recall@10": 0.900523,
+      "gain_vs_first": 0.021692,
+      "gain_pct": 2.67,
+      "est_latency_ms_per_query": 82.6
+    },
+    {
+      "K": 50,
+      "ndcg@10": 0.828081,
+      "recall@10": 0.893658,
+      "gain_vs_first": 0.014176,
+      "gain_pct": 1.74,
+      "est_latency_ms_per_query": 206.4
+    },
+    {
+      "K": 100,
+      "ndcg@10": 0.821073,
+      "recall@10": 0.886395,
+      "gain_vs_first": 0.007168,
+      "gain_pct": 0.88,
+      "est_latency_ms_per_query": 412.9
+    }
+  ],
+  "best_k": 20,
+  "significance_vs_first_stage": {
+    "n": 8640,
+    "diff": 0.021692,
+    "rel_pct": 2.67,
+    "p_value": 3.991682921865869e-28,
+    "cohens_d": 0.1187,
+    "ci95": [
+      0.017796,
+      0.025574
+    ],
+    "better": 2345,
+    "worse": 1646
+  },
+  "latency_model": {
+    "note": "每对延迟 × K 估算；实际部署延迟 ∝ K（线性假设）",
+    "per_pair_ms": 4.12882975185359
+  },
+  "total_sec": 3578.0
+}

@@ -1,0 +1,32 @@
+{
+  "note": "公平成本测量：同任务同数据，分设备",
+  "split": "dev",
+  "n_queries": 300,
+  "model": "small",
+  "rows": [
+    {
+      "device": "cpu",
+      "method": "BM25(调优 k1=0.7)",
+      "n_queries": 300,
+      "total_sec": 0.16,
+      "ms_per_query": 0.537
+    },
+    {
+      "device": "cuda",
+      "model": "small",
+      "n_queries": 300,
+      "total_sec": 0.15,
+      "ms_per_query": 0.504,
+      "method": "dense/small"
+    },
+    {
+      "device": "cpu",
+      "model": "small",
+      "n_queries": 300,
+      "total_sec": 0.34,
+      "ms_per_query": 1.143,
+      "method": "dense/small"
+    }
+  ],
+  "interpretation": "FAISS 检索本身两端都是 CPU；唯一差别是 query 编码设备。稠密在 CPU 的延迟才是与 BM25 公平对比的数字。"
+}
