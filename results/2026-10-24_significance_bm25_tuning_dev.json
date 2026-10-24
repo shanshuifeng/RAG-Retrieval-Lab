@@ -1,0 +1,84 @@
+{
+  "note": "BM25 调参（k1 1.5→0.7, b 不变）的配对 t 检验",
+  "baseline": "k1=1.5, b=0.75",
+  "tuned": "k1=0.7, b=0.75",
+  "split": "dev",
+  "tests": [
+    {
+      "metric": "ndcg@10",
+      "n_queries": 8640,
+      "baseline_mean": 0.519865,
+      "new_mean": 0.530542,
+      "diff": 0.010677,
+      "rel_pct": 2.05,
+      "t_stat": 10.547,
+      "p_value": 7.536019387866984e-26,
+      "cohens_d": 0.1135,
+      "ci95": [
+        0.008677,
+        0.012664
+      ],
+      "better": 1533,
+      "worse": 1030,
+      "same": 6077,
+      "significant": true
+    },
+    {
+      "metric": "recall@10",
+      "n_queries": 8640,
+      "baseline_mean": 0.603269,
+      "new_mean": 0.610185,
+      "diff": 0.006915,
+      "rel_pct": 1.15,
+      "t_stat": 4.462,
+      "p_value": 8.237849555241769e-06,
+      "cohens_d": 0.048,
+      "ci95": [
+        0.00385,
+        0.00998
+      ],
+      "better": 399,
+      "worse": 238,
+      "same": 8003,
+      "significant": true
+    },
+    {
+      "metric": "ndcg@100",
+      "n_queries": 8640,
+      "baseline_mean": 0.562614,
+      "new_mean": 0.572052,
+      "diff": 0.009438,
+      "rel_pct": 1.68,
+      "t_stat": 10.912,
+      "p_value": 1.5263195609727943e-27,
+      "cohens_d": 0.1174,
+      "ci95": [
+        0.007737,
+        0.011122
+      ],
+      "better": 2283,
+      "worse": 1780,
+      "same": 4577,
+      "significant": true
+    },
+    {
+      "metric": "recall@100",
+      "n_queries": 8640,
+      "baseline_mean": 0.771192,
+      "new_mean": 0.774127,
+      "diff": 0.002936,
+      "rel_pct": 0.38,
+      "t_stat": 2.441,
+      "p_value": 0.014647597653026614,
+      "cohens_d": 0.0263,
+      "ci95": [
+        0.000611,
+        0.005313
+      ],
+      "better": 231,
+      "worse": 155,
+      "same": 8254,
+      "significant": true
+    }
+  ]
+}

@@ -157,6 +157,70 @@ class TestPersistence(unittest.TestCase):
                              [x[0] for x in r.search("机器学习", 2)])
             self.assertEqual(r2.vocab, r.vocab)
 
+    def test_base_survives_roundtrip(self):
+        # ⭐ 载入后必须还能 set_params（网格调参依赖这一点）
+        split = make_split(
+            corpus={"p1": "机器学习", "p2": "深度学习", "p3": "机器学习"},
+            queries={"q1": "机器学习"},
+            qrels={"q1": ["p1"]},
+        )
+        r = BM25Fast()
+        r.build(split, verbose=False)
+        with tempfile.TemporaryDirectory() as td:
+            p = Path(td) / "fast.pkl"
+            r.save(p)
+            r2 = BM25Fast.load(p)
+            self.assertTrue(r2.can_set_params, "载入后应保留基础统计")
+            r2.set_params(k1=0.9, b=0.3)
+            self.assertEqual(r2.k1, 0.9)
+            self.assertGreater(len(r2.search("机器学习", 3)), 0)
+
+
+class TestSetParams(unittest.TestCase):
+    """⭐ set_params 是网格调参能加速的关键：必须与完整重建结果完全一致。"""
+
+    def setUp(self):
+        # 多文档、有词频差异，才能体现 k1/b 的作用
+        corpus = {
+            "p1": "苹果 苹果 苹果 香蕉",
+            "p2": "苹果 香蕉 香蕉 香蕉",
+            "p3": "苹果 橘子 香蕉",
+            "p4": "橘子 橘子 西瓜",
+        }
+        self.split = make_split(
+            corpus=corpus,
+            queries={"q1": "苹果", "q2": "香蕉 橘子"},
+            qrels={"q1": ["p1"], "q2": ["p3", "p4"]},
+        )
+
+    def test_set_params_equals_full_build(self):
+        reused = BM25Fast()
+        reused.build_base(self.split, verbose=False)
+
+        for k1, b in [(1.5, 0.75), (0.9, 0.3), (2.0, 0.9), (1.2, 0.5)]:
+            reused.set_params(k1=k1, b=b)
+
+            fresh = BM25Fast(k1=k1, b=b)
+            fresh.build(self.split, verbose=False)
+
+            for qid in self.split.query_list():
+                q = self.split.queries[qid]
+                self.assertEqual(
+                    [p for p, _ in reused.search(q, 5)],
+                    [p for p, _ in fresh.search(q, 5)],
+                    f"k1={k1}, b={b} 时 set_params 与完整重建排序不一致")
+
+    def test_set_params_before_base_raises(self):
+        with self.assertRaises(RuntimeError):
+            BM25Fast().set_params(k1=1.0)
+
+    def test_set_params_keeps_other_param(self):
+        r = BM25Fast(k1=1.5, b=0.75)
+        r.build_base(self.split, verbose=False)
+        r.set_params(k1=2.0)          # 只改 k1
+        self.assertEqual(r.k1, 2.0)
+        self.assertEqual(r.b, 0.75)   # b 应保持
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

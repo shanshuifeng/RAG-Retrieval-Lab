@@ -54,11 +54,18 @@ class BM25Fast:
     _W: csr_matrix | None = None          # (vocab × docs) 加权矩阵
     _build_sec: float = 0.0
     _n_tokens: int = 0
+    # ⭐ 与 k1/b 无关的基础统计，建一次即可复用于网格调参
+    _base: dict | None = None
 
     # ────────────────────────────────────────────
-    # 建索引
+    # 建索引（两阶段：基础统计一次 / 加权可重算）
     # ────────────────────────────────────────────
-    def build(self, split: Split, verbose: bool = True) -> None:
+    def build_base(self, split: Split, verbose: bool = True) -> None:
+        """⭐ 第一阶段：分词 + 词表 + df + tf + doc_len。
+
+        这些量与 k1/b 【无关】，所以网格调参时只跑一次。
+        结果缓存在 self._base，之后用 set_params() 秒级重建加权矩阵。
+        """
         t0 = time.time()
         self.passage_ids = list(split.passage_ids)
         n_docs = len(self.passage_ids)
@@ -97,7 +104,6 @@ class BM25Fast:
             doc_len[d] = len(toks)
             if not toks:
                 continue
-            # 统计该段内每个词的频次
             counts: dict[int, int] = {}
             for t in toks:
                 ti = vocab[t]
@@ -120,28 +126,62 @@ class BM25Fast:
         neg_mask = idf < 0
         idf = np.where(neg_mask, eps, idf)
 
-        # ── 4. 构造加权矩阵 W[t,d] = idf(t) * tf_part(t,d) ──
-        rows_a = np.asarray(rows, dtype=np.int32)
-        cols_a = np.asarray(cols, dtype=np.int32)
-        tf = np.asarray(vals, dtype=np.float64)
+        self._base = {
+            "n_docs": n_docs,
+            "V": V,
+            "idf": idf,
+            "rows": np.asarray(rows, dtype=np.int32),
+            "cols": np.asarray(cols, dtype=np.int32),
+            "tf": np.asarray(vals, dtype=np.float64),
+            "doc_len": doc_len,
+            "avgdl": float(doc_len.mean()) if n_docs else 0.0,
+        }
+        self._build_sec = time.time() - t0
+        if verbose:
+            print(f"    基础统计完成，nnz={len(rows):,}，用时 {self._build_sec:.1f}s",
+                  flush=True)
 
-        avgdl = doc_len.mean() if n_docs else 0.0
-        norm = self.k1 * (1.0 - self.b + self.b * doc_len / max(avgdl, 1e-9))
+    def set_params(self, k1: float | None = None, b: float | None = None,
+                   verbose: bool = False) -> None:
+        """⭐ 第二阶段：用新 k1/b 重建加权矩阵（毫秒级）。
 
-        # tf_part = f*(k1+1) / (f + norm[d])
+        这是网格调参能快起来的关键——避免重复分词。
+        """
+        if self._base is None:
+            raise RuntimeError("请先调用 build_base()")
+        if k1 is not None:
+            self.k1 = k1
+        if b is not None:
+            self.b = b
+
+        t0 = time.time()
+        base = self._base
+        doc_len = base["doc_len"]
+        rows_a, cols_a, tf = base["rows"], base["cols"], base["tf"]
+
+        norm = self.k1 * (1.0 - self.b + self.b * doc_len
+                          / max(base["avgdl"], 1e-9))
         denom = tf + norm[cols_a]
         tf_part = tf * (self.k1 + 1.0) / np.maximum(denom, 1e-12)
-
-        weights = idf[rows_a] * tf_part
+        weights = base["idf"][rows_a] * tf_part
 
         self._W = csr_matrix(
-            (weights, (rows_a, cols_a)), shape=(V, n_docs), dtype=np.float64
+            (weights, (rows_a, cols_a)), shape=(base["V"], base["n_docs"]),
+            dtype=np.float64
         )
-        self._build_sec = time.time() - t0
-
         if verbose:
-            print(f"    稀疏矩阵 {V:,}×{n_docs:,}，nnz={self._W.nnz:,}，"
-                  f"用时 {self._build_sec:.1f}s", flush=True)
+            print(f"    set_params(k1={self.k1}, b={self.b}) "
+                  f"用时 {(time.time()-t0)*1000:.0f} ms", flush=True)
+
+    def build(self, split: Split, verbose: bool = True) -> None:
+        """一次性建索引（= build_base + set_params）。"""
+        t0 = time.time()
+        self.build_base(split, verbose=verbose)
+        self.set_params(verbose=verbose)
+        self._build_sec = time.time() - t0
+        if verbose:
+            print(f"    稀疏矩阵 {len(self.vocab):,}×{len(self.passage_ids):,}，"
+                  f"nnz={self._W.nnz:,}，总用时 {self._build_sec:.1f}s", flush=True)
 
     # ────────────────────────────────────────────
     # 检索
@@ -198,6 +238,11 @@ class BM25Fast:
     # 持久化
     # ────────────────────────────────────────────
     def save(self, path: Path) -> None:
+        """保存索引。
+
+        ⭐ 用 save_base=True 时连同基础统计一起存，之后可用 set_params() 秒级
+           切换 k1/b（网格调参专用），代价是文件更大。
+        """
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "wb") as f:
             pickle.dump({
@@ -205,6 +250,7 @@ class BM25Fast:
                 "passage_ids": self.passage_ids,
                 "vocab": self.vocab,
                 "W": self._W,
+                "base": self._base,
                 "build_sec": self._build_sec,
                 "n_tokens": self._n_tokens,
             }, f, protocol=pickle.HIGHEST_PROTOCOL)
@@ -217,9 +263,15 @@ class BM25Fast:
         r.passage_ids = d["passage_ids"]
         r.vocab = d["vocab"]
         r._W = d["W"]
+        r._base = d.get("base")          # 旧缓存可能没有，为 None 则不能 set_params
         r._build_sec = d.get("build_sec", 0.0)
         r._n_tokens = d.get("n_tokens", 0)
         return r
+
+    @property
+    def can_set_params(self) -> bool:
+        """是否可在不重新分词的情况下切换 k1/b。"""
+        return self._base is not None
 
     def stats(self) -> dict:
         return {
