@@ -41,6 +41,8 @@ def main() -> int:
     ap.add_argument("--ks", default="1,5,10,20,100")
     ap.add_argument("--batch-size", type=int, default=64)
     ap.add_argument("--no-fp16", action="store_true")
+    ap.add_argument("--no-instruction", action="store_true",
+                    help="强制关闭 BGE query 指令前缀（默认已关闭，见 dense.py 注释）")
     ap.add_argument("--no-cache", action="store_true")
     ap.add_argument("--confirm-final", action="store_true")
     args = ap.parse_args()
@@ -64,20 +66,33 @@ def main() -> int:
     print(f"  语料 {split.n_passages:,} 段 | 查询 {split.n_queries:,} 条")
 
     print("\n[2/4] 编码 + 建索引 ...")
-    tag = f"dense_{args.model}_{args.split}"
+    # ⭐ 缓存键必须包含「影响检索结果」的配置，否则改了默认值仍会命中旧缓存
+    #    （2026-10-24 踩过：改了 query_instruction 默认值，结果没变）
+    from src.retrieval.dense import DEFAULT_QUERY_INSTRUCTION
+    instr = "" if args.no_instruction else DEFAULT_QUERY_INSTRUCTION
+    instr_tag = "noinstr" if not instr else "instr"
+    tag = f"dense_{args.model}_{args.split}_{instr_tag}"
     idx_path = CACHE / f"{tag}.pkl"
     retriever = None
     if idx_path.exists() and not args.no_cache:
         print(f"  命中缓存 {idx_path.name}")
         try:
             retriever = DenseRetriever.load(idx_path)
-            print(f"  已载入 {retriever._index.ntotal:,} 条向量")
+            cached_instr = retriever.query_instruction
+            if cached_instr != instr:
+                print(f"  ⚠️ 缓存配置不符（缓存={cached_instr!r} 期望={instr!r}），重建")
+                retriever = None
+            else:
+                print(f"  已载入 {retriever._index.ntotal:,} 条向量 "
+                      f"（指令={instr!r}）")
         except Exception as e:  # noqa: BLE001
             print(f"  ⚠️ 缓存载入失败（{type(e).__name__}），重建")
+            retriever = None
 
     if retriever is None:
         retriever = DenseRetriever(
-            model_id, batch_size=args.batch_size, use_fp16=not args.no_fp16
+            model_id, batch_size=args.batch_size, use_fp16=not args.no_fp16,
+            query_instruction=instr,
         )
         retriever.build(split, verbose=True)
         retriever.save(idx_path)

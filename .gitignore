@@ -86,3 +86,7 @@ tts_samples/
 !configs/
 !configs/**
 !data/DATACARD.md
+
+# ⭐ 但 run 文件必须【重新排除】（上面的 !results/** 会把它重新包含进来）
+#    run 文件 = 每条 query 的完整排序，约 30 MB/份，可由索引缓存重算
+results/*_run.json

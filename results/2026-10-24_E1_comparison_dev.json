@@ -7,17 +7,17 @@
       "recall@10": 0.603269,
       "ndcg@10": 0.519865
     },
+    "D1/BGE-small": {
+      "recall@10": 0.815087,
+      "ndcg@10": 0.733224
+    },
+    "D2/BGE-base": {
+      "recall@10": 0.887483,
+      "ndcg@10": 0.813905
+    },
     "BM25(调优)": {
       "recall@10": 0.610185,
       "ndcg@10": 0.530542
-    },
-    "D1/BGE-small": {
-      "recall@10": 0.809628,
-      "ndcg@10": 0.723848
-    },
-    "D2/BGE-base": {
-      "recall@10": 0.871839,
-      "ndcg@10": 0.793555
     }
   },
   "significance_tests": [
@@ -25,62 +25,62 @@
       "comparison": "D1/BGE-small vs BM25(调优)",
       "n": 8640,
       "a_mean": 0.530542,
-      "b_mean": 0.723848,
-      "diff": 0.193305,
-      "rel_pct": 36.44,
+      "b_mean": 0.733224,
+      "diff": 0.202682,
+      "rel_pct": 38.2,
       "p_value": 0.0,
-      "cohens_d": 0.5788,
+      "cohens_d": 0.6126,
       "ci95": [
-        0.18636,
-        0.200369
+        0.19584,
+        0.20955
       ],
-      "better": 4634,
-      "worse": 1121,
-      "same": 2885
+      "better": 4737,
+      "worse": 1020,
+      "same": 2883
     },
     {
       "comparison": "D2/BGE-base vs D1/BGE-small",
       "n": 8640,
-      "a_mean": 0.723848,
-      "b_mean": 0.793555,
-      "diff": 0.069708,
-      "rel_pct": 9.63,
-      "p_value": 2.5281161063292047e-196,
-      "cohens_d": 0.3301,
+      "a_mean": 0.733224,
+      "b_mean": 0.813905,
+      "diff": 0.080681,
+      "rel_pct": 11.0,
+      "p_value": 1.5008364333817614e-269,
+      "cohens_d": 0.3912,
       "ci95": [
-        0.065216,
-        0.074116
+        0.076377,
+        0.084943
       ],
-      "better": 3240,
-      "worse": 1258,
-      "same": 4142
+      "better": 3391,
+      "worse": 995,
+      "same": 4254
     },
     {
       "comparison": "D2/BGE-base vs BM25(调优)",
       "n": 8640,
       "a_mean": 0.530542,
-      "b_mean": 0.793555,
-      "diff": 0.263013,
-      "rel_pct": 49.57,
+      "b_mean": 0.813905,
+      "diff": 0.283363,
+      "rel_pct": 53.41,
       "p_value": 0.0,
-      "cohens_d": 0.7705,
+      "cohens_d": 0.8222,
       "ci95": [
-        0.255788,
-        0.270232
+        0.276172,
+        0.290523
       ],
-      "better": 5300,
-      "worse": 691,
-      "same": 2649
+      "better": 5466,
+      "worse": 594,
+      "same": 2580
     }
   ],
   "complementarity": {
     "BM25(调优) vs D1/BGE-small": {
-      "mean_iou_top10": 0.2065,
-      "queries_where_union_beats_a": 3153
+      "mean_iou_top10": 0.2143,
+      "queries_where_union_beats_a": 3169
     },
     "D1/BGE-small vs D2/BGE-base": {
-      "mean_iou_top10": 0.3956,
-      "queries_where_union_beats_a": 1468
+      "mean_iou_top10": 0.4136,
+      "queries_where_union_beats_a": 1536
     }
   }
 }

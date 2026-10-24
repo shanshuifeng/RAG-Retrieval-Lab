@@ -13,7 +13,6 @@
 
 from __future__ import annotations
 
-import glob
 import json
 import sys
 from pathlib import Path
@@ -96,15 +95,20 @@ def main() -> int:
     print("\n[1/4] 汇总各方法结果 ...")
     runs = {
         "BM25(默认)": load_run_latest("*E1_bm25_dev_run.json"),
-        "BM25(调优)": load_run_latest("*E1_bm25fast_dev*k11.5_b0.75_top100.json"),
+        # ⚠️ 注意：这里【不】从磁盘找"调优"的 run —— 那需要 k1=0.7 的参数，
+        #    而现成缓存只有 k1=1.5。故下面用 set_params 现场重算。
         "D1/BGE-small": load_run_latest("*E1_dense_small_dev_run.json"),
         "D2/BGE-base": load_run_latest("*E1_dense_base_dev_run.json"),
     }
-    # BM25 调优结果需要单独重跑 k1=0.7（缓存里是 1.5）
+    # BM25 调优结果：用基础统计 + set_params 现场重算（约 5 秒）
     from src.retrieval.bm25_fast import BM25Fast
-    tuned = BM25Fast.load(CACHE / "bm25fast_base_dev.pkl")
-    tuned.set_params(k1=0.7, b=0.75)
-    runs["BM25(调优)"] = tuned.run_all(split, top_k=100, verbose=False)
+    base_cache = CACHE / "bm25fast_base_dev.pkl"
+    if base_cache.exists():
+        tuned = BM25Fast.load(base_cache)
+        tuned.set_params(k1=0.7, b=0.75)
+        runs["BM25(调优)"] = tuned.run_all(split, top_k=100, verbose=False)
+    else:
+        print("  ⚠️ 缺少 bm25fast_base_dev.pkl，跳过 BM25(调优) 组")
 
     runs = {k: v for k, v in runs.items() if v}
     print(f"  可用方法：{list(runs)}")

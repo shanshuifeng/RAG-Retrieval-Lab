@@ -1,0 +1,34 @@
+{
+  "split": "dev",
+  "model": "base",
+  "n_queries": 8640,
+  "nDCG@10": {
+    "with_instruction": 0.793555,
+    "without_instruction": 0.813905,
+    "diff_without_minus_with": 0.02035,
+    "rel_pct": 2.56,
+    "p_value": 3.843615115657488e-51,
+    "cohens_d": 0.1629,
+    "ci95": [
+      0.017688,
+      0.023008
+    ],
+    "without_better": 1994,
+    "with_better": 1153
+  },
+  "Recall@10": {
+    "with_instruction": 0.871839,
+    "without_instruction": 0.887483,
+    "diff_without_minus_with": 0.015645,
+    "rel_pct": 1.79,
+    "p_value": 2.1219419394263647e-24,
+    "cohens_d": 0.11,
+    "ci95": [
+      0.012715,
+      0.018734
+    ],
+    "without_better": 500,
+    "with_better": 240
+  },
+  "verdict": "无指令显著更好 —— 应关闭指令前缀（与 BGE 官方推荐相反，但符合 v1.5 模型卡「不加指令也不明显下降」的说明）"
+}

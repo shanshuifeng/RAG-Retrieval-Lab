@@ -11,10 +11,12 @@
      用 faiss.IndexFlatIP 而非 IndexFlatL2，保证与其他方法口径一致。
 
   2. **BGE 的 query 指令前缀**
-     BGE 中文检索模型对 query 建议加指令：
+     BGE 官方文档建议对 query 加指令：
        "为这个句子生成表示以用于检索相关文章："
-     ⭐ 但 v1.5 版本官方说明「可以不加」也能用，且加了需保持一致。
-     本项目【加】该前缀（更接近官方推荐用法），并在报告中注明。
+     ⭐ 但本项目实测表明**不加更好**（见下方 BGE_QUERY_INSTRUCTION 注释）：
+        BGE-small +1.30%、BGE-base +2.56%，均显著。
+     故 DEFAULT_QUERY_INSTRUCTION = ""，并通过
+     scripts/ablate_query_instruction.py 可复现该结论。
 
   3. **max_seq_length = 512 tokens**
      超过会被截断 → 长段落信息丢失。这正是 docs/04 指出的
@@ -44,8 +46,26 @@ from sentence_transformers import SentenceTransformer
 
 from src.data.loader import Split
 
-# ⭐ BGE 中文模型的检索指令前缀（官方 v1.5 说明：可加可不加，但需全文一致）
+# ⭐ BGE 中文模型的检索指令前缀
+#
+# ⚠️ 2026-10-24 消融实验的重要发现：**本项目默认【不启用】该指令**。
+#
+#    BGE 官方文档建议检索时给 query 加此前缀；v1.5 模型卡则说明
+#    「v1.5 版本即使不加指令也不会有明显性能下降」。
+#    实测（dev 8,640 query，100,000 段）表明本数据上**不加更好**：
+#
+#      BGE-small: nDCG@10  0.723848（带） vs 0.733224（不带）  +1.30%
+#                 p = 8.0e-13, CI [+0.0069, +0.0120] → 显著
+#      BGE-base : nDCG@10  0.793555（带） vs 0.813905（不带）  +2.56%
+#                 p = 3.8e-51, CI [+0.0177, +0.0230] → 显著
+#
+#    ⇒ 故 DEFAULT_QUERY_INSTRUCTION = ""（空），并且这是一个
+#      【必须写进报告】的负面结果：官方推荐的默认做法，
+#      在特定数据/评测口径下未必最优。
+#
+#    复现：scripts/ablate_query_instruction.py
 BGE_QUERY_INSTRUCTION = "为这个句子生成表示以用于检索相关文章："
+DEFAULT_QUERY_INSTRUCTION = ""      # ⭐ 实测最优（见上方说明）
 
 
 @dataclass
@@ -56,7 +76,7 @@ class DenseRetriever:
     batch_size: int = 64
     max_length: int = 512
     use_fp16: bool = True
-    query_instruction: str = BGE_QUERY_INSTRUCTION
+    query_instruction: str = DEFAULT_QUERY_INSTRUCTION
     cache_folder: str = "models"
     name: str = "dense"
 

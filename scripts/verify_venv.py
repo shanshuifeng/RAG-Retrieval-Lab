@@ -41,7 +41,6 @@ def check_base() -> None:
     record(PASS, f"Python {sys.version.split()[0]}", f"解释器: {sys.executable}")
 
     # 确认在 venv 内
-    import sysconfig
     if sys.prefix != sys.base_prefix:
         record(PASS, "运行在虚拟环境中", f"prefix: {sys.prefix}")
     else:
