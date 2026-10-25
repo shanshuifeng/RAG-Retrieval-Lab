@@ -1,0 +1,58 @@
+{
+  "experiment_id": "E1",
+  "method": "dense:BAAI/bge-base-zh-v1.5",
+  "group": "D2",
+  "split": "dev",
+  "date": "2026-10-25T22:27:10",
+  "config": {
+    "corpus_size": 100000,
+    "queries": 8640,
+    "model": "BAAI/bge-base-zh-v1.5",
+    "dim": 768,
+    "max_length": 512,
+    "normalize": true,
+    "index": "faiss.IndexFlatIP",
+    "query_instruction": "",
+    "top_k": 100,
+    "ks": [
+      1,
+      5,
+      10,
+      20,
+      100
+    ]
+  },
+  "results": {
+    "mrr@1": 0.760417,
+    "mrr@10": 0.833646,
+    "mrr@100": 0.83529,
+    "mrr@20": 0.834826,
+    "mrr@5": 0.82972,
+    "ndcg@1": 0.760417,
+    "ndcg@10": 0.813905,
+    "ndcg@100": 0.837674,
+    "ndcg@20": 0.825833,
+    "ndcg@5": 0.795525,
+    "recall@1": 0.456566,
+    "recall@10": 0.887483,
+    "recall@100": 0.973298,
+    "recall@20": 0.929585,
+    "recall@5": 0.814932
+  },
+  "cost": {
+    "encode_sec": 252.26,
+    "build_sec_total": 260.1,
+    "search_sec_total": 34.7,
+    "search_ms_per_query": 4.016,
+    "device": "cuda",
+    "fp16": true,
+    "dim": 768
+  },
+  "filtered": {
+    "empty_relevant": 0,
+    "missing_in_run": 0,
+    "missing_in_run_qids": [],
+    "queries_evaluated": 8640
+  },
+  "total_sec": 45.0
+}
