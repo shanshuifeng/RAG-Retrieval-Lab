@@ -1,0 +1,34 @@
+{
+  "note": "审查补充实验③：质量接近时混合是否有效（验证项目判断准则）",
+  "summary": [
+    {
+      "pair": "BM25(调优) × D2/base",
+      "quality_ratio": 1.534,
+      "strong_single": 0.813905,
+      "best_k_equal_weight": 10,
+      "best_ndcg_equal_weight": 0.724883,
+      "best_rel_pct_equal": -10.94,
+      "best_weight": 0.0,
+      "best_ndcg_with_weight": 0.813905,
+      "best_rel_pct_weight": -0.0,
+      "hybrid_effective": false
+    },
+    {
+      "pair": "D1/small × D2/base",
+      "quality_ratio": 1.11,
+      "strong_single": 0.813905,
+      "best_k_equal_weight": 10,
+      "best_ndcg_equal_weight": 0.788662,
+      "best_rel_pct_equal": -3.1,
+      "best_weight": 0.0,
+      "best_ndcg_with_weight": 0.813905,
+      "best_rel_pct_weight": -0.0,
+      "hybrid_effective": false
+    }
+  ],
+  "e2_reference": {
+    "pair": "BM25 × D2",
+    "quality_ratio": 1.53,
+    "gain_pct": -12.96
+  }
+}
