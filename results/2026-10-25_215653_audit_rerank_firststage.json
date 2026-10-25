@@ -1,0 +1,40 @@
+{
+  "note": "审查补充实验：重排在弱/中/强第一段下的收益（dev，K=20）",
+  "n_queries": 1500,
+  "K": 20,
+  "rows": [
+    {
+      "first_stage": "BM25(调优)",
+      "baseline_ndcg10": 0.570721,
+      "reranked_ndcg10": 0.701652,
+      "gain": 0.130931,
+      "gain_pct": 22.94,
+      "p_value": 1.6100687237797075e-90,
+      "cohens_d": 0.5585,
+      "headroom_pct": 42.93,
+      "gain_as_pct_of_headroom": 30.5
+    },
+    {
+      "first_stage": "D1/small",
+      "baseline_ndcg10": 0.747437,
+      "reranked_ndcg10": 0.828794,
+      "gain": 0.081357,
+      "gain_pct": 10.88,
+      "p_value": 2.3501373350580974e-52,
+      "cohens_d": 0.4089,
+      "headroom_pct": 25.26,
+      "gain_as_pct_of_headroom": 32.21
+    },
+    {
+      "first_stage": "D2/base",
+      "baseline_ndcg10": 0.81537,
+      "reranked_ndcg10": 0.854205,
+      "gain": 0.038835,
+      "gain_pct": 4.76,
+      "p_value": 1.7532838035510695e-16,
+      "cohens_d": 0.2152,
+      "headroom_pct": 18.46,
+      "gain_as_pct_of_headroom": 21.03
+    }
+  ]
+}

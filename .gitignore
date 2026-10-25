@@ -92,3 +92,10 @@ tts_samples/
 # ⭐ 但 run 文件必须【重新排除】（上面的 !results/** 会把它重新包含进来）
 #    run 文件 = 每条 query 的完整排序，约 30 MB/份，可由索引缓存重算
 results/*_run.json
+
+# ⭐⭐ 例外：test 集的 run 必须入库
+#    理由（2026-10-25 审查发现）：test 集已用一次性锁永久锁定，
+#    既不能重跑（锁），若 run 也不入库，则「用 test 数据算其他 K 值的指标」
+#    将【永久不可行】。run 文件是 test 唯一的原始证据，体积（约 150 MB）
+#    换来的是「可复核性」，值得。
+!results/*_test_final*_run.json
