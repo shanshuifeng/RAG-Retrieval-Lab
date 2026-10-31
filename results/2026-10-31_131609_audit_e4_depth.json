@@ -1,0 +1,355 @@
+{
+  "note": "审查补充实验③：分块劣势随检索深度 K 的收敛性（dev，仅 BM25）",
+  "n_queries": 8640,
+  "k_grid": [
+    10,
+    20,
+    50,
+    100
+  ],
+  "depth": 100,
+  "bm25_params": {
+    "k1": 0.7,
+    "b": 0.75
+  },
+  "native": {
+    "recall@10": 0.610185,
+    "recall@20": 0.669832,
+    "recall@50": 0.732096,
+    "recall@100": 0.774127,
+    "ndcg@10": 0.530542,
+    "ndcg@20": 0.547325,
+    "ndcg@50": 0.563353,
+    "ndcg@100": 0.572052,
+    "mrr@10": 0.573743,
+    "mrr@20": 0.576903,
+    "mrr@50": 0.578344,
+    "mrr@100": 0.578804
+  },
+  "strategies": [
+    {
+      "strategy": "fixed256",
+      "corpus": {
+        "strategy": "fixed256",
+        "n_parents": 100000,
+        "n_chunks": 211852,
+        "chunks_per_parent_mean": 2.12,
+        "chunks_per_parent_max": 425,
+        "chunk_len_mean": 195.1,
+        "chunk_len_median": 256,
+        "chunk_len_p95": 256,
+        "chunk_len_max": 256
+      },
+      "dup_rate@10": 0.1511,
+      "dup_rate@100": 0.1704,
+      "by_k": {
+        "10": {
+          "recall": {
+            "mean": 0.601436,
+            "rel_pct": -1.43,
+            "p_value": 5.494440656693641e-08,
+            "cohens_d": -0.0585
+          },
+          "ndcg": {
+            "mean": 0.521752,
+            "rel_pct": -1.66,
+            "p_value": 1.5992970907452938e-14,
+            "cohens_d": -0.0828
+          },
+          "mrr": {
+            "mean": 0.566282,
+            "rel_pct": -1.3,
+            "p_value": 3.193951749695534e-06,
+            "cohens_d": -0.0501
+          }
+        },
+        "20": {
+          "recall": {
+            "mean": 0.662141,
+            "rel_pct": -1.15,
+            "p_value": 2.438522370981247e-07,
+            "cohens_d": -0.0556
+          },
+          "ndcg": {
+            "mean": 0.538964,
+            "rel_pct": -1.53,
+            "p_value": 2.135680646449383e-15,
+            "cohens_d": -0.0855
+          },
+          "mrr": {
+            "mean": 0.569616,
+            "rel_pct": -1.26,
+            "p_value": 4.328658286579927e-06,
+            "cohens_d": -0.0495
+          }
+        },
+        "50": {
+          "recall": {
+            "mean": 0.723978,
+            "rel_pct": -1.11,
+            "p_value": 2.9709874155469703e-09,
+            "cohens_d": -0.0639
+          },
+          "ndcg": {
+            "mean": 0.554918,
+            "rel_pct": -1.5,
+            "p_value": 3.933208187053483e-17,
+            "cohens_d": -0.0907
+          },
+          "mrr": {
+            "mean": 0.5711,
+            "rel_pct": -1.25,
+            "p_value": 4.6175886659649614e-06,
+            "cohens_d": -0.0493
+          }
+        },
+        "100": {
+          "recall": {
+            "mean": 0.755063,
+            "rel_pct": -2.46,
+            "p_value": 1.4702376839944635e-38,
+            "cohens_d": -0.1404
+          },
+          "ndcg": {
+            "mean": 0.56151,
+            "rel_pct": -1.84,
+            "p_value": 2.7479264894340326e-26,
+            "cohens_d": -0.1145
+          },
+          "mrr": {
+            "mean": 0.571441,
+            "rel_pct": -1.27,
+            "p_value": 3.1954918781533893e-06,
+            "cohens_d": -0.0501
+          }
+        }
+      }
+    },
+    {
+      "strategy": "fixed512",
+      "corpus": {
+        "strategy": "fixed512",
+        "n_parents": 100000,
+        "n_chunks": 120007,
+        "chunks_per_parent_mean": 1.2,
+        "chunks_per_parent_max": 190,
+        "chunk_len_mean": 306.1,
+        "chunk_len_median": 285,
+        "chunk_len_p95": 512,
+        "chunk_len_max": 512
+      },
+      "dup_rate@10": 0.0408,
+      "dup_rate@100": 0.0477,
+      "by_k": {
+        "10": {
+          "recall": {
+            "mean": 0.608708,
+            "rel_pct": -0.24,
+            "p_value": 0.10684091110452353,
+            "cohens_d": -0.0174
+          },
+          "ndcg": {
+            "mean": 0.527606,
+            "rel_pct": -0.55,
+            "p_value": 1.15413034798953e-06,
+            "cohens_d": -0.0524
+          },
+          "mrr": {
+            "mean": 0.570886,
+            "rel_pct": -0.5,
+            "p_value": 0.00067974550967862,
+            "cohens_d": -0.0366
+          }
+        },
+        "20": {
+          "recall": {
+            "mean": 0.6669,
+            "rel_pct": -0.44,
+            "p_value": 0.0006025640059711638,
+            "cohens_d": -0.0369
+          },
+          "ndcg": {
+            "mean": 0.54395,
+            "rel_pct": -0.62,
+            "p_value": 1.6097789858909586e-09,
+            "cohens_d": -0.065
+          },
+          "mrr": {
+            "mean": 0.573953,
+            "rel_pct": -0.51,
+            "p_value": 0.0003961215365312956,
+            "cohens_d": -0.0381
+          }
+        },
+        "50": {
+          "recall": {
+            "mean": 0.730481,
+            "rel_pct": -0.22,
+            "p_value": 0.04299652968687803,
+            "cohens_d": -0.0218
+          },
+          "ndcg": {
+            "mean": 0.560315,
+            "rel_pct": -0.54,
+            "p_value": 1.2372544540497836e-08,
+            "cohens_d": -0.0613
+          },
+          "mrr": {
+            "mean": 0.575444,
+            "rel_pct": -0.5,
+            "p_value": 0.00047423055191960287,
+            "cohens_d": -0.0376
+          }
+        },
+        "100": {
+          "recall": {
+            "mean": 0.76883,
+            "rel_pct": -0.68,
+            "p_value": 4.4182657710617897e-10,
+            "cohens_d": -0.0672
+          },
+          "ndcg": {
+            "mean": 0.568349,
+            "rel_pct": -0.65,
+            "p_value": 2.5735158146288306e-12,
+            "cohens_d": -0.0754
+          },
+          "mrr": {
+            "mean": 0.57586,
+            "rel_pct": -0.51,
+            "p_value": 0.0003886811765873325,
+            "cohens_d": -0.0382
+          }
+        }
+      }
+    },
+    {
+      "strategy": "paragraph",
+      "corpus": {
+        "strategy": "paragraph",
+        "n_parents": 100000,
+        "n_chunks": 120033,
+        "chunks_per_parent_mean": 1.2,
+        "chunks_per_parent_max": 190,
+        "chunk_len_mean": 306.2,
+        "chunk_len_median": 285,
+        "chunk_len_p95": 512,
+        "chunk_len_max": 512
+      },
+      "dup_rate@10": 0.0409,
+      "dup_rate@100": 0.0478,
+      "by_k": {
+        "10": {
+          "recall": {
+            "mean": 0.608621,
+            "rel_pct": -0.26,
+            "p_value": 0.08980939382487242,
+            "cohens_d": -0.0183
+          },
+          "ndcg": {
+            "mean": 0.527657,
+            "rel_pct": -0.54,
+            "p_value": 1.8702330746202113e-06,
+            "cohens_d": -0.0513
+          },
+          "mrr": {
+            "mean": 0.570999,
+            "rel_pct": -0.48,
+            "p_value": 0.001104544755789479,
+            "cohens_d": -0.0351
+          }
+        },
+        "20": {
+          "recall": {
+            "mean": 0.667134,
+            "rel_pct": -0.4,
+            "p_value": 0.0018092081425045532,
+            "cohens_d": -0.0336
+          },
+          "ndcg": {
+            "mean": 0.544083,
+            "rel_pct": -0.59,
+            "p_value": 7.161448467316061e-09,
+            "cohens_d": -0.0623
+          },
+          "mrr": {
+            "mean": 0.574104,
+            "rel_pct": -0.49,
+            "p_value": 0.0007753297817305244,
+            "cohens_d": -0.0362
+          }
+        },
+        "50": {
+          "recall": {
+            "mean": 0.730513,
+            "rel_pct": -0.22,
+            "p_value": 0.05047833411618345,
+            "cohens_d": -0.021
+          },
+          "ndcg": {
+            "mean": 0.560395,
+            "rel_pct": -0.53,
+            "p_value": 3.177724548567362e-08,
+            "cohens_d": -0.0596
+          },
+          "mrr": {
+            "mean": 0.575576,
+            "rel_pct": -0.48,
+            "p_value": 0.0008486713305657397,
+            "cohens_d": -0.0359
+          }
+        },
+        "100": {
+          "recall": {
+            "mean": 0.768744,
+            "rel_pct": -0.7,
+            "p_value": 2.599131410663322e-10,
+            "cohens_d": -0.0681
+          },
+          "ndcg": {
+            "mean": 0.56841,
+            "rel_pct": -0.64,
+            "p_value": 6.218762934423194e-12,
+            "cohens_d": -0.0741
+          },
+          "mrr": {
+            "mean": 0.575988,
+            "rel_pct": -0.49,
+            "p_value": 0.0006897416264059017,
+            "cohens_d": -0.0365
+          }
+        }
+      }
+    }
+  ],
+  "verdicts": {
+    "fixed256": {
+      "gaps_by_k": {
+        "10": -1.43,
+        "20": -1.15,
+        "50": -1.11,
+        "100": -2.46
+      },
+      "verdict": "保持（H2）"
+    },
+    "fixed512": {
+      "gaps_by_k": {
+        "10": -0.24,
+        "20": -0.44,
+        "50": -0.22,
+        "100": -0.68
+      },
+      "verdict": "保持（H2）"
+    },
+    "paragraph": {
+      "gaps_by_k": {
+        "10": -0.26,
+        "20": -0.4,
+        "50": -0.22,
+        "100": -0.7
+      },
+      "verdict": "保持（H2）"
+    }
+  },
+  "total_sec": 301.8
+}

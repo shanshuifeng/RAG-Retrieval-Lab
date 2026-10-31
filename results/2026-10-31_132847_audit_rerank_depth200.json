@@ -1,0 +1,53 @@
+{
+  "note": "审查补充实验④：弱第一段（BM25）下重排 K 的上界（dev）",
+  "n_queries": 1500,
+  "first_top": 200,
+  "k_grid": [
+    20,
+    50,
+    100,
+    200
+  ],
+  "baseline_ndcg10": 0.570721,
+  "rows": [
+    {
+      "K": 20,
+      "ndcg@10": 0.701652,
+      "gain": 0.130931,
+      "rel_pct": 22.94,
+      "cohens_d": 0.5585,
+      "p_value": 1.6100687237797075e-90,
+      "pct_of_headroom": 30.5
+    },
+    {
+      "K": 50,
+      "ndcg@10": 0.74753,
+      "gain": 0.176809,
+      "rel_pct": 30.98,
+      "cohens_d": 0.6424,
+      "p_value": 1.1714979619212917e-114,
+      "pct_of_headroom": 41.19
+    },
+    {
+      "K": 100,
+      "ndcg@10": 0.777584,
+      "gain": 0.206863,
+      "rel_pct": 36.25,
+      "cohens_d": 0.6858,
+      "p_value": 1.034457491101442e-127,
+      "pct_of_headroom": 48.19
+    },
+    {
+      "K": 200,
+      "ndcg@10": 0.785076,
+      "gain": 0.214355,
+      "rel_pct": 37.56,
+      "cohens_d": 0.6926,
+      "p_value": 8.981950380013106e-130,
+      "pct_of_headroom": 49.93
+    }
+  ],
+  "still_rising_at_200": true,
+  "latency_note": "延迟按 E3 的 K 线性关系外推：K=20 实测重排约 75 ms，K=200 约 750 ms（估算，非实测）",
+  "total_sec": 648.8
+}
