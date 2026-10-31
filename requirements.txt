@@ -39,6 +39,11 @@ datasets>=2.14
 matplotlib>=3.8
 
 
+# ────────── 开发 · 测试（推荐，锁文件里已固定为 9.1.1）──────────
+# ⚠️ 不装 pytest 也能跑（unittest discover 亦可用），但文档命令以 pytest 为准
+pytest>=8.0
+
+
 # ────────── 阶段3 · 可选（加分项）──────────
 # openai>=1.0        # LLM 生成与 LLM-as-Judge，需 API Key
 

@@ -83,7 +83,7 @@ python -m src.pipeline.run_experiment --config configs/e1_baseline.yaml
 
 ```
 RAG-Retrieval-Lab/
-├── docs/           # ⭐ 9 份设计文档（先读 05 和 06）
+├── docs/           # ⭐ 19 份文档（先读 05 和 06；结论看 17）
 ├── configs/        # YAML 配置（改数字就能跑新实验）
 ├── data/           # 数据（不入 git）
 ├── src/
@@ -175,7 +175,7 @@ RAG-Retrieval-Lab/
 |---|---|---|
 | **M0** 环境搭建 + 文档 | ✅ 完成 | venv 验证 34/34 |
 | **M1** 数据准备 | ✅ 完成 | dev 8,640 / test 2,000 query；见 [DATACARD](data/DATACARD.md) |
-| **M1.5** 指标实现验证 | ✅ 完成 | 单测 126/126；oracle/random/anti 交叉验证 |
+| **M1.5** 指标实现验证 | ✅ 完成 | 单测 139/139；oracle/random/anti 交叉验证 |
 | **M2** E1 基线 | ✅ 完成 | 稠密 ≫ BM25（test +55.1%）；见 [docs/11](docs/11-E1实验报告草稿.md) |
 | **M3** E2 混合检索 | ✅ 完成 | ⭐ 负面结果：RRF 比纯 D2 差 -12.8%；见 [docs/13](docs/13-E2混合检索实验报告.md) |
 | **M4** E3 重排序 | ✅ 完成 | K=20 甜点；dev +2.67%；见 [docs/14](docs/14-E3重排序实验报告.md) |

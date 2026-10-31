@@ -1,0 +1,84 @@
+{
+  "note": "公平成本测量：同任务同数据，分设备 + ⭐ 分口径（2026-10-31 口径修正）",
+  "split": "dev",
+  "n_queries": 300,
+  "model": "base",
+  "rows": [
+    {
+      "device": "cpu",
+      "method": "BM25(调优 k1=0.7)",
+      "mode": "single",
+      "batch_size": 1,
+      "n_queries": 300,
+      "total_sec": 0.19,
+      "ms_per_query": 0.627
+    },
+    {
+      "device": "cuda",
+      "model": "base",
+      "method": "dense/base",
+      "dtype": "fp32",
+      "mode": "single",
+      "batch_size": 1,
+      "n_queries": 300,
+      "total_sec": 27.56,
+      "ms_per_query": 91.879
+    },
+    {
+      "device": "cuda",
+      "model": "base",
+      "method": "dense/base",
+      "dtype": "fp32",
+      "mode": "batch",
+      "batch_size": 300,
+      "n_queries": 300,
+      "total_sec": 1.35,
+      "ms_per_query": 4.496
+    },
+    {
+      "device": "cuda",
+      "model": "base",
+      "method": "dense/base",
+      "dtype": "fp16",
+      "mode": "single",
+      "batch_size": 1,
+      "n_queries": 300,
+      "total_sec": 27.78,
+      "ms_per_query": 92.586
+    },
+    {
+      "device": "cuda",
+      "model": "base",
+      "method": "dense/base",
+      "dtype": "fp16",
+      "mode": "batch",
+      "batch_size": 300,
+      "n_queries": 300,
+      "total_sec": 1.48,
+      "ms_per_query": 4.944
+    },
+    {
+      "device": "cpu",
+      "model": "base",
+      "method": "dense/base",
+      "dtype": "fp32",
+      "mode": "single",
+      "batch_size": 1,
+      "n_queries": 300,
+      "total_sec": 45.66,
+      "ms_per_query": 152.201
+    },
+    {
+      "device": "cpu",
+      "model": "base",
+      "method": "dense/base",
+      "dtype": "fp32",
+      "mode": "batch",
+      "batch_size": 300,
+      "n_queries": 300,
+      "total_sec": 8.44,
+      "ms_per_query": 28.138
+    }
+  ],
+  "interpretation": "FAISS 检索本身两端都是 CPU；唯一差别是 query 编码设备与精度。⭐ 必须按 mode 分组看：single=线上真实延迟（batch=1），batch=离线吞吐摊销（batch=N）。跨 mode 比较会把稠密低估数十倍。BM25 是倒排索引逐条检索，无批处理概念，只有 single 口径。⭐ fp16 单条比 fp32 慢约 32%，批量则快约 1.9 倍：低延迟场景用 fp32，高吞吐场景才用 fp16。"
+}
