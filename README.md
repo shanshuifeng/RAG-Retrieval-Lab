@@ -61,7 +61,7 @@ pip install torch --index-url https://download.pytorch.org/whl/cpu  # 或 cu121
 pip install transformers sentence-transformers faiss-cpu datasets
 ```
 
-Windows 下若 `faiss-cpu` 安装失败，见 [`docs/08-环境与技术栈.md`](docs/08-环境与技术栈.md) 第四节的三个备选方案。
+Windows 下若 `faiss-cpu` 安装失败，见 [`docs/08-环境与技术栈.md`](docs/08-环境与技术栈.md) 第三节的三个备选方案。
 
 ### 第 4 步：下载数据
 
